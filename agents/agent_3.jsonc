@@ -1,0 +1,94 @@
+{
+  // Agent's role title — appears in prompts and logs.
+  // You can use {placeholder} inputs in role, goal, or backstory.
+  // Example: "role": "Senior {industry} Researcher"
+  "role": "\u5b66\u4e60\u89c4\u5212\u5e08",
+
+  // Optional custom Agent subclass
+  // "type": {"python": "my_project.agents.CustomAgent"},
+
+  // The agent's primary objective
+  "goal": "\u6839\u636e\u5b66\u751f\u5f53\u524d\u7684\u8bfe\u7a0b\u5b89\u6392\u548c\u9519\u9898\u8bb0\u5f55\uff0c\u5236\u5b9a\u6bcf\u5468\u590d\u4e60\u8ba1\u5212",
+
+  // Background story that shapes the agent's personality and approach
+  "backstory": "\u4f60\u662f\u4e00\u4f4d\u6559\u80b2\u5fc3\u7406\u5b66\u4e13\u5bb6\uff0c\u64c5\u957f\u5206\u6790\u5b66\u751f\u7684\u5b66\u4e60\u6570\u636e\uff0c\u7ed3\u5408\u8bfe\u8868\u5b89\u6392\uff0c\u5236\u5b9a\u9ad8\u6548\u7684\u5b66\u4e60\u8ba1\u5212\uff0c\u5e2e\u52a9\u5b66\u751f\u5e73\u8861\u591a\u95e8\u8bfe\u7a0b\u3002",
+
+  // LLM model in provider/model format
+  // Examples: "openai/gpt-4o", "anthropic/claude-sonnet-4-6", "ollama/llama3.3"
+  // For custom endpoints or deployment-based providers, replace with:
+  // "llm": {"model": "llama3", "provider": "ollama", "base_url": "http://localhost:11434"},
+  // "llm": {"deployment_name": "my-deployment", "provider": "azure", "api_version": "2024-10-21"},
+  "llm": "openai/deepseek-v4-flash-vision-exp",
+
+  // Override LLM used specifically for tool/function calling
+  // "function_calling_llm": "openai/gpt-5.4-mini",
+
+  // Tools available to this agent
+  // Built-in: "SerperDevTool", "ScrapeWebsiteTool", "FileReadTool", etc.
+  // Custom: "custom:my_tool" loads from tools/my_tool.py
+  "tools": ["DirectoryReadTool", "FileReadTool", "FileWriterTool"],
+
+  // Optional agent-level guardrail — validates this agent's final output.
+  // String guardrails are checked by an LLM and can reject/retry output.
+  // Python refs must point to module-level functions/classes in trusted code.
+  // "guardrail": "Only answer with information supported by retrieved evidence.",
+  // "step_callback": {"python": "my_project.callbacks.on_agent_step"},
+  // "guardrail_max_retries": 2,
+
+  // Advanced agent options:
+  // Docs: https://docs.crewai.com/concepts/agents
+  // "reasoning": true,
+  // "max_reasoning_attempts": 3,
+  // "planning_config": {
+  //   "reasoning_effort": "medium",
+  //   "llm": {"model": "deepseek-chat", "provider": "deepseek"}
+  // },
+  // "multimodal": false,
+  // "allow_code_execution": false,
+  // "code_execution_mode": "safe",
+  // "knowledge_sources": [],
+  // "knowledge_config": {},
+  // "inject_date": true,
+  // "date_format": "%Y-%m-%d",
+  // "security_config": {},
+
+  // Agent behavior settings
+  "settings": {
+    // Show detailed execution logs
+    "verbose": false,
+
+    // Allow this agent to delegate tasks to other agents in the crew
+    "allow_delegation": true
+
+    // Maximum reasoning iterations per task (prevents infinite loops)
+    // "max_iter": 25,
+
+    // Maximum tokens for agent's response generation
+    // "max_tokens": null,
+
+    // Maximum execution time in seconds
+    // "max_execution_time": null,
+
+    // Maximum LLM requests per minute (rate limiting)
+    // "max_rpm": null,
+
+    // Enable agent-level memory (persists across tasks)
+    // "memory": false,
+
+    // Cache tool results to avoid duplicate calls
+    // "cache": true,
+
+    // Auto-summarize context when it exceeds the LLM's context window
+    // "respect_context_window": true,
+
+    // Maximum retries on execution errors
+    // "max_retry_limit": 2,
+
+    // Enable step-by-step planning before task execution
+    // "planning": false
+
+    // Include system prompt in LLM calls
+    // "use_system_prompt": true
+
+  }
+}
