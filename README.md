@@ -1,20 +1,134 @@
-# AI_learning_assistant
+# AI Learning Assistant：多智能体学习辅导系统
 
-A crewAI project using JSON-first configuration.
+面向大学阶段数学与物理学习场景的命令行 AI 学习助手。项目基于 **CrewAI** 组织学科辅导与学习规划能力，支持文本提问和题目/学习记录图片输入，并将本地教材作为可供智能体查阅的知识资料。
 
-## Running
+> 目标：把“问一道题”扩展为可解释的分步辅导与可执行的复习规划，帮助学习者建立知识理解与学习安排的闭环。
 
-```bash
-crewai run
+## 项目亮点
+
+- **多智能体角色分工**：高等数学辅导老师、大学物理辅导老师、学习规划师分别处理学科答疑与个性化复习安排。
+- **多模态交互**：除文本问题外，还可以输入题目截图、课表或错题本图片，由视觉模型辅助理解输入内容。
+- **强调可解释的学习输出**：数学任务要求给出关键公式、推导过程与教材来源；物理任务要求先解释原理再展开求解。
+- **教材驱动的回答约束**：项目内置高等数学与线性代数教材文件，任务描述要求优先参考相关教材内容，减少脱离课程语境的泛化回答。
+- **工程化资源管理**：使用 `uv` 管理 Python 依赖；通过 Git LFS 管理大型教材 PDF，避免大文件进入普通 Git 对象历史。
+
+## 功能展示
+
+| 模块 | 输入 | 输出 |
+| --- | --- | --- |
+| 高等数学辅导 | 文字题目或题目图片 | 分步骤解答、关键公式、推导过程与教材引用提示 |
+| 大学物理辅导 | 文字题目或题目图片 | 物理原理说明、分步骤推导和最终答案 |
+| 学习规划 | 学习情况文字描述或课程/错题图片 | 按周组织的复习计划，包含每日科目、重点与时间安排 |
+
+## 系统设计
+
+```text
+用户输入（文本 / 图片）
+        │
+        ├── 高等数学辅导 Agent ──► 教材优先的分步讲解
+        ├── 大学物理辅导 Agent ──► 原理说明 + 推导求解
+        └── 学习规划 Agent     ──► 个性化周复习计划
+        │
+        └── CrewAI 编排、任务执行与记忆能力
 ```
 
-## Project Structure
+项目提供两层配置：
 
-- `agents/` - Agent definitions (JSONC)
-- `crew.jsonc` - Crew definition with tasks and configuration
-- `tools/` - Custom tools (Python)
-- `knowledge/` - Knowledge files for agents
+- `main.py`：交互式命令行入口，负责菜单、文本/图片输入与单智能体任务执行。
+- `crew.jsonc` + `agents/*.jsonc`：CrewAI 的声明式配置，定义三个角色、任务期望输出、执行流程及可用文件工具。
 
-> **Note:** `custom:<name>` tool references execute `tools/<name>.py` as local
-> Python code when the crew loads. Only run crew projects from sources you
-> trust.
+## 技术栈
+
+- Python 3.10–3.13
+- CrewAI：智能体、任务与 Crew 编排
+- DeepSeek 兼容视觉模型接口：用于文字与图片理解
+- `crewai_files.ImageFile`：图片题目/学习记录输入
+- Git LFS：大型 PDF 教材版本管理
+- `uv`：依赖与运行环境管理
+
+## 快速开始
+
+### 1. 克隆并拉取 LFS 教材文件
+
+```bash
+git clone https://github.com/LWS0912/AI_learning_assistant.git
+cd AI_learning_assistant
+git lfs pull
+```
+
+### 2. 创建环境并安装依赖
+
+```bash
+uv sync
+```
+
+### 3. 配置模型密钥
+
+`main.py` 读取环境变量 `OPENAI_API_KEY`，并将其传给 DeepSeek 兼容接口。请不要提交密钥到仓库。
+
+PowerShell 示例：
+
+```powershell
+$env:OPENAI_API_KEY = "你的 DeepSeek API Key"
+```
+
+也可以在本地 `.env` 文件中维护密钥（该文件已被 Git 忽略）。
+
+### 4. 启动交互式助手
+
+```bash
+uv run python main.py
+```
+
+按菜单选择高数答疑、物理答疑或学习规划，再选择文字输入或图片路径即可。
+
+如使用声明式 Crew 配置，可运行：
+
+```bash
+uv run crewai run
+```
+
+## 目录说明
+
+```text
+.
+├── agents/          # 三个智能体的 JSONC 角色配置
+├── knowledge/       # 教材 PDF 与用户偏好资料（PDF 由 Git LFS 管理）
+├── tools/           # 可扩展的自定义工具目录
+├── crew.jsonc       # CrewAI 任务、流程与运行配置
+├── main.py          # 文本/图片交互式命令行入口
+├── pyproject.toml   # 项目依赖与 CrewAI 配置
+└── uv.lock          # 锁定的依赖版本
+```
+
+## 典型使用场景
+
+```text
+输入：上传一道含泰勒展开的题目截图
+输出：识别题目 → 给出展开公式 → 说明截断阶数 → 展示推导步骤
+
+输入："本周要复习高数和大学物理，积分和电磁学掌握较弱"
+输出：按天分配的周复习计划，包括学习主题、重点内容和建议时长
+```
+
+## 可写入简历的项目描述
+
+**AI Learning Assistant｜多智能体学习辅导系统｜Python · CrewAI · 多模态 LLM · Git LFS**
+
+- 基于 CrewAI 设计高等数学辅导、大学物理辅导与学习规划 3 类智能体，通过角色分工完成学科答疑与个性化复习计划生成。
+- 实现文本与图片双输入的命令行交互流程，结合视觉模型处理题目截图、课程表及错题本等非结构化学习材料。
+- 面向高数任务设计“关键公式—推导过程—教材来源”的结构化输出要求，并接入本地教材资料以增强课程语境下的回答质量。
+- 使用 `uv` 管理 Python 依赖、Git LFS 管理大型教材 PDF，解决大文件版本控制与协作推送问题。
+
+## 后续可迭代方向
+
+- 为教材建立可检索的向量索引，并展示引用页码与片段。
+- 增加题目分类、错题归档与学习进度统计。
+- 增加自动化测试与评测集，量化题目解答和计划生成质量。
+- 提供 Web 界面与会话记录，提升实际使用体验。
+
+## 注意事项
+
+- 教材文件仅应用于个人学习与研究，请遵守版权及授权范围。
+- `.env`、`.venv/` 和本地生成文件不应提交到仓库。
+- 大型 PDF 已配置 Git LFS；协作者克隆后需执行 `git lfs pull` 获取完整教材文件。
