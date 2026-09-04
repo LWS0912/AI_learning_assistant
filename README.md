@@ -111,8 +111,6 @@ uv run crewai run
 输出：按天分配的周复习计划，包括学习主题、重点内容和建议时长
 ```
 
-## 可写入简历的项目描述
-
 **AI Learning Assistant｜多智能体学习辅导系统｜Python · CrewAI · 多模态 LLM · Git LFS**
 
 - 基于 CrewAI 设计高等数学辅导、大学物理辅导与学习规划 3 类智能体，通过角色分工完成学科答疑与个性化复习计划生成。
