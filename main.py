@@ -2,6 +2,10 @@
 import os
 from crewai import Agent, Task, Crew, LLM
 from crewai_files import ImageFile  # 处理图片输入
+from rich.console import Console
+from rich.markdown import Markdown
+
+console = Console()
 
 # ============================================
 # 1. 配置 DeepSeek 视觉模型
@@ -53,7 +57,15 @@ def run_task(agent, description, image_path=None):
         description += " 请优先分析图片中的题目内容。"
 
     # 创建任务
-    task = Task(description=description, agent=agent, input_files=input_files)  # 传入图片（如果有）
+    task = Task(
+        description=description,
+        expected_output=(
+            "用自然语言给出清晰、准确、分步骤的回答，包含必要的公式、推导过程和最终结论。"
+            "使用 Markdown 标题、列表和代码块组织内容，不要返回 JSON、Python 对象或调试信息。"
+        ),
+        agent=agent,
+        input_files=input_files,
+    )
 
     crew = Crew(agents=[agent], tasks=[task])
     result = crew.kickoff()
@@ -61,7 +73,8 @@ def run_task(agent, description, image_path=None):
     print("\n" + "=" * 50)
     print("📝 回答：")
     print("=" * 50)
-    print(result)
+    answer = getattr(result, "raw", None) or str(result)
+    console.print(Markdown(answer))
     print("=" * 50)
 
 
